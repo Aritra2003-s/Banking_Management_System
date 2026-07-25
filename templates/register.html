@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account | Secure Bank</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <!-- External CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/register.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="background-overlay"></div>
+
+    <div class="register-container">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <div class="bank-logo">
+          <i class="fa-solid fa-building-columns"></i>
+        </div>
+        <h1>Secure Bank</h1>
+        <p>Create your secure banking account</p>
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          <i class="fa-solid fa-circle-info"></i> {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+
+      <!-- Registration Form -->
+      <form
+        id="registerForm"
+        action="{{ url_for('auth.register_user_route') }}"
+        method="POST"
+      >
+        <!-- CSRF Token -->
+        {{ form.hidden_tag() if form else '' }}
+
+        <div class="form-grid">
+          <!-- First Name -->
+          <div class="input-group">
+            <label for="first_name">First Name</label>
+            <div class="input-box">
+              <i class="fa-solid fa-user"></i>
+              <input
+                type="text"
+                id="first_name"
+                name="first_name"
+                autocomplete="given-name"
+                placeholder="Enter first name"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Last Name -->
+          <div class="input-group">
+            <label for="last_name">Last Name</label>
+            <div class="input-box">
+              <i class="fa-solid fa-user"></i>
+              <input
+                type="text"
+                id="last_name"
+                name="last_name"
+                autocomplete="family-name"
+                placeholder="Enter last name"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <div class="input-box">
+            <i class="fa-solid fa-envelope"></i>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="email"
+              placeholder="Enter email address"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Phone -->
+          <div class="input-group">
+            <label for="phone">Phone Number</label>
+            <div class="input-box">
+              <i class="fa-solid fa-phone"></i>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                autocomplete="tel"
+                maxlength="10"
+                placeholder="Enter phone number"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="input-group">
+            <label for="dob">Date of Birth</label>
+            <div class="input-box">
+              <i class="fa-solid fa-calendar-days"></i>
+              <input type="date" id="dob" name="dob" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="input-group">
+          <label for="address">Address</label>
+          <div class="input-box">
+            <i class="fa-solid fa-location-dot"></i>
+            <textarea
+              id="address"
+              name="address"
+              rows="3"
+              placeholder="Enter your address"
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Aadhaar -->
+          <div class="input-group">
+            <label for="aadhaar">Aadhaar Number</label>
+            <div class="input-box">
+              <i class="fa-solid fa-id-card"></i>
+              <input
+                type="text"
+                id="aadhaar"
+                name="aadhaar"
+                maxlength="12"
+                placeholder="Enter 12-digit Aadhaar"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- PAN -->
+          <div class="input-group">
+            <label for="pan">PAN Number</label>
+            <div class="input-box">
+              <i class="fa-solid fa-address-card"></i>
+              <input
+                type="text"
+                id="pan"
+                name="pan"
+                maxlength="10"
+                placeholder="ABCDE1234F"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Password -->
+          <div class="input-group">
+            <label for="password">Password</label>
+            <div class="input-box">
+              <i class="fa-solid fa-lock"></i>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                autocomplete="new-password"
+                placeholder="Create password"
+                required
+              />
+              <span class="toggle-password" data-target="password">
+                <i class="fa-solid fa-eye"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="input-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="input-box">
+              <i class="fa-solid fa-lock"></i>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirm_password"
+                autocomplete="new-password"
+                placeholder="Confirm password"
+                required
+              />
+              <span class="toggle-password" data-target="confirmPassword">
+                <i class="fa-solid fa-eye"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password Strength Indicator -->
+        <div class="password-strength">
+          <div class="strength-bar" id="strengthBar"></div>
+          <small>Password Strength</small>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="terms">
+          <label>
+            <input type="checkbox" name="terms" required />
+            <span
+              >I agree to the <a href="#">Terms & Conditions</a> and
+              <a href="#">Privacy Policy</a></span
+            >
+          </label>
+        </div>
+
+        <!-- Register Button -->
+        <button type="submit" class="register-btn">
+          <i class="fa-solid fa-user-plus"></i>
+          <span>Create Account</span>
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>OR</span>
+      </div>
+
+      <!-- Google Signup Button -->
+      <button type="button" class="google-btn">
+        <i class="fa-brands fa-google"></i>
+        <span>Continue with Google</span>
+      </button>
+
+      <!-- Login Link -->
+      <div class="login-link">
+        Already have an account?
+        <a href="{{ url_for('auth.login') }}">Login Here</a>
+      </div>
+
+      <!-- Security Notice -->
+      <div class="security-info">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Your information is encrypted and securely stored.</span>
+      </div>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

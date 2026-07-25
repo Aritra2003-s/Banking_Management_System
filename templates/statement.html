@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Statement | Secure Bank</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- Dedicated External CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/statement.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- ================= Sidebar ================= -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Secure Bank</h2>
+    </div>
+
+    <nav>
+      <ul>
+        <li>
+          <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('customer.customers_route') }}">
+            <i class="fa-solid fa-users"></i>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Accounts</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{{ url_for('account.statement_route') }}">
+            <i class="fa-solid fa-file-invoice"></i>
+            <span>Full Statement</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('auth.logout_route') }}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ================= Main Content ================= -->
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Account Statement</h1>
+        <p>Filter transactions and download official bank statements</p>
+      </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <i class="fa-solid fa-circle-info"></i> {{ message }}
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Date Range & Account Filter Form -->
+    <section class="filter-container">
+      <form action="{{ url_for('account.statement_route') }}" method="GET">
+        <div class="filter-grid">
+          <div class="input-group">
+            <label for="account_number">Account Number</label>
+            <input type="text" name="account_number" id="account_number" placeholder="Enter Account Number" value="{{ account_number }}" required>
+          </div>
+          <div class="input-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" name="start_date" id="start_date" value="{{ start_date }}">
+          </div>
+          <div class="input-group">
+            <label for="end_date">End Date</label>
+            <input type="date" name="end_date" id="end_date" value="{{ end_date }}">
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-filter"></i> Filter Statement
+          </button>
+        </div>
+      </form>
+    </section>
+
+    {% if account %}
+    <!-- Statement Summary & Export Bar -->
+    <section class="summary-topbar">
+      <div class="account-info">
+        <h3>Account: <strong>{{ account['account_number'] }}</strong> | Balance: <span class="balance-amount">${{ "{:,.2f}".format(account['balance']) }}</span></h3>
+      </div>
+      <div class="export-actions">
+        <!-- PDF Export -->
+        <a href="{{ url_for('account.export_statement_route', export_format='pdf', account_number=account_number, start_date=start_date, end_date=end_date) }}" class="btn btn-danger">
+          <i class="fa-solid fa-file-pdf"></i> Export PDF
+        </a>
+        <!-- Excel Export -->
+        <a href="{{ url_for('account.export_statement_route', export_format='excel', account_number=account_number, start_date=start_date, end_date=end_date) }}" class="btn btn-success">
+          <i class="fa-solid fa-file-excel"></i> Export Excel
+        </a>
+        <!-- CSV Export -->
+        <a href="{{ url_for('account.export_statement_route', export_format='csv', account_number=account_number, start_date=start_date, end_date=end_date) }}" class="btn btn-secondary">
+          <i class="fa-solid fa-file-csv"></i> Export CSV
+        </a>
+      </div>
+    </section>
+
+    <!-- Statement Data Table -->
+    <section class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Txn ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Balance After</th>
+            <th>Description</th>
+            <th>Date & Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if transactions %}
+            {% for txn in transactions %}
+            <tr>
+              <td>#{{ txn["transaction_id"] }}</td>
+              <td>
+                <span class="badge {% if txn['transaction_type'] in ['Deposit', 'Transfer In'] %}badge-success{% else %}badge-danger{% endif %}">
+                  {{ txn["transaction_type"] }}
+                </span>
+              </td>
+              <td><strong>${{ "{:,.2f}".format(txn["amount"]) }}</strong></td>
+              <td>${{ "{:,.2f}".format(txn["balance_after"]) }}</td>
+              <td>{{ txn["description"] or 'N/A' }}</td>
+              <td>{{ txn["created_at"] }}</td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="empty-state">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>No transactions found for the selected filter.</p>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+  </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

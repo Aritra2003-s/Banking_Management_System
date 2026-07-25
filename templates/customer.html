@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Management | Secure Bank</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- External CSS Link -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- ================= Sidebar ================= -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Secure Bank</h2>
+    </div>
+
+    <ul>
+      <li>
+        <a href="{{ url_for('dashboard') }}">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="active">
+        <a href="{{ url_for('customer.customers_route') }}">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Accounts</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-money-bill-transfer"></i>
+          <span>Transactions</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Reports</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('auth.logout_route') }}">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- ================= Main Content ================= -->
+  <main class="content">
+
+    <!-- Top Navigation -->
+    <header class="topbar">
+      <div>
+        <h1>Customer Management</h1>
+        <p>Manage all bank customer profiles and account statuses.</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="notification-btn" type="button" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+        </button>
+        <div class="profile">
+          <i class="fa-solid fa-circle-user"></i>
+          <span>Administrator</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <form action="{{ url_for('customer.search') }}" method="GET">
+        <div class="search-box">
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search by Name, Email, Phone, Identification, or PAN..." 
+            value="{{ search if search else '' }}"
+          >
+          <button type="submit">
+            <i class="fa-solid fa-magnifying-glass"></i> Search
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Dashboard Summary Cards -->
+    <section class="cards">
+      <div class="card">
+        <i class="fa-solid fa-users"></i>
+        <h3>Total Customers</h3>
+        <h2>{{ customers|length if customers else 0 }}</h2>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-user-check"></i>
+        <h3>Active</h3>
+        <h2>--</h2>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-user-lock"></i>
+        <h3>Frozen</h3>
+        <h2>--</h2>
+      </div>
+      <div class="card">
+        <i class="fa-solid fa-user-xmark"></i>
+        <h3>Deleted</h3>
+        <h2>--</h2>
+      </div>
+    </section>
+
+    <!-- Toolbar Action Buttons -->
+    <section class="toolbar">
+      <a href="{{ url_for('customer.add_customer') }}" class="btn btn-primary">
+        <i class="fa-solid fa-user-plus"></i> Add Customer
+      </a>
+    </section>
+
+    <!-- Customer Data Table -->
+    <section class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if customers %}
+            {% for customer in customers %}
+            <tr>
+              <td>{{ customer["customer_id"] }}</td>
+              <td>{{ customer["first_name"] }} {{ customer["last_name"] }}</td>
+              <td>{{ customer["email"] }}</td>
+              <td>{{ customer["phone"] }}</td>
+              <td>
+                {% if customer["status"] == "Active" %}
+                  <span class="badge badge-success">Active</span>
+                {% elif customer["status"] == "Frozen" %}
+                  <span class="badge badge-warning">Frozen</span>
+                {% elif customer["status"] == "Deleted" %}
+                  <span class="badge badge-danger">Deleted</span>
+                {% else %}
+                  <span class="badge badge-secondary">{{ customer["status"] }}</span>
+                {% endif %}
+              </td>
+              <td>{{ customer["created_at"] }}</td>
+              <td class="action-buttons">
+                <a href="{{ url_for('customer.edit_customer', customer_id=customer['customer_id']) }}" class="btn btn-edit">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </a>
+
+                {% if customer["status"] == "Active" %}
+                  <a href="{{ url_for('customer.freeze_customer', customer_id=customer['customer_id']) }}" 
+                     class="btn btn-warning" 
+                     onclick="return confirm('Freeze this customer account?');">
+                    <i class="fa-solid fa-user-lock"></i> Freeze
+                  </a>
+                {% endif %}
+
+                {% if customer["status"] == "Frozen" %}
+                  <a href="{{ url_for('customer.activate_customer', customer_id=customer['customer_id']) }}" 
+                     class="btn btn-success" 
+                     onclick="return confirm('Activate this customer account?');">
+                    <i class="fa-solid fa-user-check"></i> Activate
+                  </a>
+                {% endif %}
+
+                {% if customer["status"] != "Deleted" %}
+                  <a href="{{ url_for('customer.delete_customer', customer_id=customer['customer_id']) }}" 
+                     class="btn btn-danger" 
+                     onclick="return confirm('Are you sure you want to delete this customer?');">
+                    <i class="fa-solid fa-trash"></i> Delete
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7" class="empty-state">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>No customers found.</p>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <i class="fa-solid fa-circle-info"></i> {{ message }}
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Pagination -->
+    <section class="pagination-section">
+      <div class="pagination">
+        <button class="page-btn" disabled>
+          <i class="fa-solid fa-angle-left"></i> Previous
+        </button>
+        <span class="page-number">Page 1 of 1</span>
+        <button class="page-btn" disabled>
+          Next <i class="fa-solid fa-angle-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- Quick Statistics & Informational Cards -->
+    <section class="quick-stats">
+      <div class="stat-box">
+        <i class="fa-solid fa-user-check"></i>
+        <div>
+          <h3>Customer Management</h3>
+          <p>Monitor, edit, and manage all registered customers.</p>
+        </div>
+      </div>
+      <div class="stat-box">
+        <i class="fa-solid fa-user-lock"></i>
+        <div>
+          <h3>Freeze Accounts</h3>
+          <p>Temporarily disable customer access when required.</p>
+        </div>
+      </div>
+      <div class="stat-box">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div>
+          <h3>Secure Banking</h3>
+          <p>Customer information is encrypted and securely stored.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Footer -->
+    <footer class="dashboard-footer">
+      <div class="footer-left">
+        © 2026 Secure Bank. All Rights Reserved.
+      </div>
+      <div class="footer-right">
+        Banking Management System | Version 1.0.0
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- External JS Script Link -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banking Dashboard | Secure Bank</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- Linked CSS Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+  <!-- Chart.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- Step 16: Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Apex Bank</h2>
+    </div>
+
+    <nav>
+      <ul aria-label="Main Navigation">
+        <li class="active">
+          <a href="{{ url_for('dashboard') }}" aria-label="Go to Dashboard">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('customer.customers_route') }}" aria-label="Manage Customers">
+            <i class="fa-solid fa-users"></i>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Manage Accounts">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Accounts</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="View Transactions">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>Transactions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="View Reports">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Change Settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('auth.logout_route') }}" aria-label="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-user">
+      <p><strong>Admin User</strong></p>
+      <p class="user-email">admin@apexbank.com</p>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+    <header class="topbar">
+      <div>
+        <h1>Dashboard Overview</h1>
+        <p>Key financial metrics and transaction analytics.</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="notification-btn" type="button" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+        </button>
+        <div class="profile">
+          <i class="fa-solid fa-circle-user"></i>
+          <span>Administrator</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Step 17: Dashboard Cards -->
+    <section class="metrics-section">
+      <h2 class="section-title">Metrics</h2>
+      <div class="cards-grid">
+        <div class="card">
+          <i class="fa-solid fa-users"></i>
+          <h3>Total Customers</h3>
+          <p class="metric-value">12,480</p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-wallet"></i>
+          <h3>Total Accounts</h3>
+          <p class="metric-value">18,920</p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-arrow-down-left"></i>
+          <h3>Deposits</h3>
+          <p class="metric-value deposit">$4,200,000</p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-arrow-up-right"></i>
+          <h3>Withdrawals</h3>
+          <p class="metric-value withdrawal">$1,800,000</p>
+        </div>
+        <div class="card">
+          <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          <h3>Transfers</h3>
+          <p class="metric-value transfer">$890,000</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Step 18: Chart.js Visualizations -->
+    <section class="analytics-section">
+      <h2 class="section-title">Analytics</h2>
+      
+      <div class="charts-grid">
+        <!-- Bar Chart Container -->
+        <div class="chart-card bar-chart-card">
+          <h3>Monthly Transactions</h3>
+          <div class="chart-wrapper">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Pie Chart Container -->
+        <div class="chart-card pie-chart-card">
+          <h3>Transaction Distribution</h3>
+          <div class="chart-wrapper">
+            <canvas id="pieChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script>
+  // Bar Chart Script
+  const ctxBar = document.getElementById('barChart').getContext('2d');
+  new Chart(ctxBar, {
+    type: 'bar',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [{
+        label: 'Transaction Volume ($)',
+        data: [65000, 59000, 80000, 81000, 56000, 95000],
+        backgroundColor: '#3b82f6',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          grid: { color: '#f1f5f9' },
+          ticks: { color: '#64748b' }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: '#64748b' }
+        }
+      }
+    }
+  });
+
+  // Pie Chart Script
+  const ctxPie = document.getElementById('pieChart').getContext('2d');
+  new Chart(ctxPie, {
+    type: 'pie',
+    data: {
+      labels: ['Deposits', 'Withdrawals', 'Transfers'],
+      datasets: [{
+        data: [60, 25, 15],
+        backgroundColor: ['#10b981', '#ef4444', '#3b82f6'],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+</script>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Customer | Secure Bank</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/view_customer.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- ================= Sidebar ================= -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Secure Bank</h2>
+    </div>
+
+    <nav>
+      <ul>
+        <li>
+          <a href="{{ url_for('dashboard') }}">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="active">
+          <a href="{{ url_for('customer.customers_route') }}">
+            <i class="fa-solid fa-users"></i>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Accounts</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>Transactions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('auth.logout_route') }}">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ================= Main Content ================= -->
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Customer Details</h1>
+        <p>View complete profile and account information</p>
+      </div>
+      <div class="top-actions">
+        <a href="{{ url_for('customer.customers_route') }}" class="btn btn-secondary">
+          <i class="fa-solid fa-arrow-left"></i> Back to Customers
+        </a>
+      </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <i class="fa-solid fa-circle-info"></i> {{ message }}
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Profile Overview Card -->
+    <section class="profile-header-card">
+      <div class="profile-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="profile-info">
+        <h2>{{ customer["first_name"] }} {{ customer["last_name"] }}</h2>
+        <p class="customer-id">Customer ID: <strong>{{ customer["customer_id"] }}</strong></p>
+        <span class="badge {% if customer['status'] == 'Active' %}badge-success{% elif customer['status'] == 'Frozen' %}badge-warning{% else %}badge-danger{% endif %}">
+          {{ customer["status"] }}
+        </span>
+      </div>
+      <div class="profile-actions">
+        <a href="{{ url_for('customer.edit_customer', customer_id=customer['customer_id']) }}" class="btn btn-edit">
+          <i class="fa-solid fa-pen-to-square"></i> Edit
+        </a>
+        
+        {% if customer["status"] == "Active" %}
+          <a href="{{ url_for('customer.freeze_customer', customer_id=customer['customer_id']) }}" 
+             class="btn btn-warning" 
+             onclick="return confirm('Freeze this customer account?');">
+            <i class="fa-solid fa-user-lock"></i> Freeze
+          </a>
+        {% elif customer["status"] == "Frozen" %}
+          <a href="{{ url_for('customer.activate_customer', customer_id=customer['customer_id']) }}" 
+             class="btn btn-success" 
+             onclick="return confirm('Activate this customer account?');">
+            <i class="fa-solid fa-user-check"></i> Activate
+          </a>
+        {% endif %}
+
+        {% if customer["status"] != "Deleted" %}
+          <a href="{{ url_for('customer.delete_customer', customer_id=customer['customer_id']) }}" 
+             class="btn btn-danger" 
+             onclick="return confirm('Are you sure you want to delete this customer?');">
+            <i class="fa-solid fa-trash"></i> Delete
+          </a>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Customer Details Grid -->
+    <div class="details-grid">
+      <!-- Personal Information Card -->
+      <section class="detail-card">
+        <h3><i class="fa-solid fa-id-card"></i> Personal Information</h3>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="label">Full Name</span>
+            <span class="value">{{ customer["first_name"] }} {{ customer["last_name"] }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Email Address</span>
+            <span class="value">{{ customer["email"] }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Phone Number</span>
+            <span class="value">{{ customer["phone"] }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Date of Birth</span>
+            <span class="value">{{ customer["dob"] }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Address</span>
+            <span class="value">{{ customer["address"] }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- KYC & Security Details Card -->
+      <section class="detail-card">
+        <h3><i class="fa-solid fa-shield-halved"></i> KYC & Account Details</h3>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="label">Aadhaar Number</span>
+            <span class="value">
+              {% if customer["aadhaar"] %}
+                XXXX-XXXX-{{ customer["aadhaar"][-4:] }}
+              {% else %}
+                N/A
+              {% endif %}
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="label">PAN Number</span>
+            <span class="value">{{ customer["pan"] }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Account Status</span>
+            <span class="value"><strong>{{ customer["status"] }}</strong></span>
+          </div>
+          <div class="info-item">
+            <span class="label">Registration Date</span>
+            <span class="value">{{ customer["created_at"] }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

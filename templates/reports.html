@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Reports | Secure Bank</title>
+
+  <!-- Google Font & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- External Stylesheets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- ================= Sidebar ================= -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Secure Bank</h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+        <li><a href="{{ url_for('customer.customers_route') }}"><i class="fa-solid fa-users"></i><span>Customers</span></a></li>
+        <li><a href="#"><i class="fa-solid fa-wallet"></i><span>Accounts</span></a></li>
+        <li class="active"><a href="{{ url_for('report.reports_route') }}"><i class="fa-solid fa-chart-pie"></i><span>System Reports</span></a></li>
+        <li><a href="{{ url_for('auth.logout_route') }}"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- ================= Main Content ================= -->
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>System Analytics & Reports</h1>
+        <p>Comprehensive overview of customers, transactions, and account metrics</p>
+      </div>
+    </header>
+
+    <!-- Top Summary Metrics -->
+    <section class="summary-cards">
+      <div class="card">
+        <h3>Total Customers</h3>
+        <h2>{{ total_customers }}</h2>
+      </div>
+      <div class="card">
+        <h3>Total Accounts</h3>
+        <h2>{{ total_accounts }}</h2>
+      </div>
+      <div class="card">
+        <h3>Total Bank Liquidity</h3>
+        <h2 class="text-success">${{ "{:,.2f}".format(total_liquidity) }}</h2>
+      </div>
+      <div class="card">
+        <h3>Filtered Volume</h3>
+        <h2 class="text-primary">${{ "{:,.2f}".format(total_volume) }}</h2>
+      </div>
+    </section>
+
+    <!-- Tab Navigation Bar -->
+    <div class="tab-navigation">
+      <button class="tab-btn {% if active_tab == 'customers' %}active{% endif %}" data-tab="customersTab">
+        <i class="fa-solid fa-users"></i> Customer Report
+      </button>
+      <button class="tab-btn {% if active_tab == 'transactions' %}active{% endif %}" data-tab="transactionsTab">
+        <i class="fa-solid fa-money-bill-transfer"></i> Transaction Report
+      </button>
+      <button class="tab-btn {% if active_tab == 'accounts' %}active{% endif %}" data-tab="accountsTab">
+        <i class="fa-solid fa-vault"></i> Account Report
+      </button>
+    </div>
+
+    <!-- ================= 1. CUSTOMER REPORT TAB ================= -->
+    <div id="customersTab" class="tab-pane {% if active_tab == 'customers' %}active{% endif %}">
+      <section class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>City</th>
+              <th>Total Accounts</th>
+              <th>Net Worth</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in customers %}
+            <tr>
+              <td>#{{ c.customer_id }}</td>
+              <td><strong>{{ c.full_name }}</strong></td>
+              <td>{{ c.email }}</td>
+              <td>{{ c.phone or 'N/A' }}</td>
+              <td>{{ c.city or 'N/A' }}</td>
+              <td><span class="badge badge-success">{{ c.total_accounts }}</span></td>
+              <td><strong>${{ "{:,.2f}".format(c.net_worth) }}</strong></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="empty-state">No customer data available.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- ================= 2. TRANSACTION REPORT TAB ================= -->
+    <div id="transactionsTab" class="tab-pane {% if active_tab == 'transactions' %}active{% endif %}">
+      <!-- Filter Bar -->
+      <section class="form-container filter-form-container">
+        <form action="{{ url_for('report.reports_route') }}" method="GET" id="transactionFilterForm">
+          <input type="hidden" name="tab" value="transactions">
+          <div class="form-grid filter-grid">
+            <div class="input-group">
+              <label for="start_date">Start Date</label>
+              <input type="date" name="start_date" id="start_date" value="{{ start_date }}">
+            </div>
+            <div class="input-group">
+              <label for="end_date">End Date</label>
+              <input type="date" name="end_date" id="end_date" value="{{ end_date }}">
+            </div>
+            <div class="input-group">
+              <label for="txn_type">Type</label>
+              <select name="txn_type" id="txn_type" class="filter-select">
+                <option value="All" {% if txn_type == 'All' %}selected{% endif %}>All Types</option>
+                <option value="Deposit" {% if txn_type == 'Deposit' %}selected{% endif %}>Deposit</option>
+                <option value="Withdrawal" {% if txn_type == 'Withdrawal' %}selected{% endif %}>Withdrawal</option>
+                <option value="Transfer Out" {% if txn_type == 'Transfer Out' %}selected{% endif %}>Transfer Out</option>
+                <option value="Transfer In" {% if txn_type == 'Transfer In' %}selected{% endif %}>Transfer In</option>
+              </select>
+            </div>
+            <div class="form-buttons align-end">
+              <button type="submit" class="btn btn-primary btn-full">
+                <i class="fa-solid fa-filter"></i> Apply Filter
+              </button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Txn ID</th>
+              <th>Account No</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Balance After</th>
+              <th>Description</th>
+              <th>Date & Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in transactions %}
+            <tr>
+              <td>#{{ t.transaction_id }}</td>
+              <td><strong>{{ t.account_number }}</strong></td>
+              <td>
+                <span class="badge {% if t.transaction_type in ['Deposit', 'Transfer In'] %}badge-success{% else %}badge-danger{% endif %}">
+                  {{ t.transaction_type }}
+                </span>
+              </td>
+              <td><strong>${{ "{:,.2f}".format(t.amount) }}</strong></td>
+              <td>${{ "{:,.2f}".format(t.balance_after) }}</td>
+              <td>{{ t.description or 'N/A' }}</td>
+              <td>{{ t.created_at }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="empty-state">No transaction logs match the filter.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- ================= 3. ACCOUNT REPORT TAB ================= -->
+    <div id="accountsTab" class="tab-pane {% if active_tab == 'accounts' %}active{% endif %}">
+      <section class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Account ID</th>
+              <th>Account Number</th>
+              <th>Owner Name</th>
+              <th>Account Type</th>
+              <th>Balance</th>
+              <th>Status</th>
+              <th>Created Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in accounts %}
+            <tr>
+              <td>#{{ a.account_id }}</td>
+              <td><strong>{{ a.account_number }}</strong></td>
+              <td>{{ a.owner_name }}</td>
+              <td>{{ a.account_type }}</td>
+              <td><strong>${{ "{:,.2f}".format(a.balance) }}</strong></td>
+              <td>
+                <span class="badge {% if a.status == 'Active' %}badge-success{% else %}badge-danger{% endif %}">
+                  {{ a.status }}
+                </span>
+              </td>
+              <td>{{ a.created_at }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="empty-state">No accounts found in system.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+  </main>
+</div>
+
+<!-- External JS Scripts -->
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+</body>
+</html>

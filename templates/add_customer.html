@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Customer | Secure Bank</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- Linked CSS Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_customer.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- ================= Sidebar ================= -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Secure Bank</h2>
+    </div>
+
+    <ul>
+      <li>
+        <a href="{{ url_for('dashboard') }}">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="active">
+        <a href="{{ url_for('customer.customers_route') }}">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Accounts</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-money-bill-transfer"></i>
+          <span>Transactions</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Reports</span>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <i class="fa-solid fa-gear"></i>
+          <span>Settings</span>
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('auth.logout_route') }}">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- ================= Main Content ================= -->
+  <main class="content">
+
+    <header class="topbar">
+      <div>
+        <h1>Add New Customer</h1>
+        <p>Create a new bank customer account</p>
+      </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="flash-messages">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              <i class="fa-solid fa-circle-info"></i> {{ message }}
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    <!-- ================= Form Section ================= -->
+    <section class="form-container">
+      <form action="{{ url_for('customer.add_customer') }}" method="POST">
+        
+        <div class="form-grid">
+          <!-- First Name -->
+          <div class="input-group">
+            <label for="first_name">First Name</label>
+            <input type="text" name="first_name" id="first_name" placeholder="Enter First Name" required>
+          </div>
+
+          <!-- Last Name -->
+          <div class="input-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" name="last_name" id="last_name" placeholder="Enter Last Name" required>
+          </div>
+
+          <!-- Email -->
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Enter Email" required>
+          </div>
+
+          <!-- Phone -->
+          <div class="input-group">
+            <label for="phone">Phone</label>
+            <input type="tel" name="phone" id="phone" maxlength="10" placeholder="Enter Phone Number" required>
+          </div>
+
+          <!-- DOB -->
+          <div class="input-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" name="dob" id="dob" required>
+          </div>
+
+          <!-- Identification Field -->
+          <div class="input-group">
+            <label for="aadhaar">Aadhaar Number</label>
+            <input type="text" name="aadhaar" id="aadhaar" maxlength="12" placeholder="Enter Aadhaar" required>
+          </div>
+
+          <!-- PAN -->
+          <div class="input-group">
+            <label for="pan">PAN Number</label>
+            <input type="text" name="pan" id="pan" maxlength="10" placeholder="ABCDE1234F" required>
+          </div>
+
+          <!-- Password -->
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Create Password" required>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="input-group full-width">
+          <label for="address">Address</label>
+          <textarea name="address" id="address" rows="4" placeholder="Enter Complete Address" required></textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="input-group full-width">
+          <label for="status">Status</label>
+          <select name="status" id="status">
+            <option value="Active">Active</option>
+            <option value="Frozen">Frozen</option>
+          </select>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-buttons">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-user-plus"></i> Add Customer
+          </button>
+          
+          <a href="{{ url_for('customer.customers_route') }}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Back
+          </a>
+
+          <button type="reset" class="btn btn-outline">
+            <i class="fa-solid fa-rotate-left"></i> Reset
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

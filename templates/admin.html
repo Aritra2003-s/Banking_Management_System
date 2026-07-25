@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Admin Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <!-- Linked CSS Stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- Step 16: Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fa-solid fa-building-columns"></i>
+      <h2>Apex Bank</h2>
+    </div>
+
+    <nav>
+      <ul aria-label="Main Navigation">
+        <li class="active">
+          <a href="{{ url_for('dashboard') }}" aria-label="Go to Dashboard">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('customer.customers_route') }}" aria-label="Manage Customers">
+            <i class="fa-solid fa-users"></i>
+            <span>Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Manage Accounts">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Accounts</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="View Transactions">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+            <span>Transactions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="View Reports">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" aria-label="Change Settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ url_for('auth.logout_route') }}" aria-label="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-user">
+      <p><strong>Admin User</strong></p>
+      <p class="user-email">admin@apexbank.com</p>
+    </div>
+  </aside>
+
+  <!-- Main View -->
+  <main class="content">
+    <header class="topbar">
+      <div>
+        <h1>Admin Control Panel</h1>
+        <p>System Status: <span class="status-online">● Operational</span></p>
+      </div>
+
+      <div class="top-actions">
+        <button class="notification-btn" type="button" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+        </button>
+        <div class="profile">
+          <i class="fa-solid fa-circle-user"></i>
+          <span>Administrator</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <p>Select a section from the sidebar to manage system operations.</p>
+    </section>
+  </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
