@@ -1,4 +1,4 @@
-from db import get_db_connection
+from database.database import get_db_connection
 
 def record_transaction(account_id, transaction_type, amount, balance_after, description=""):
     """

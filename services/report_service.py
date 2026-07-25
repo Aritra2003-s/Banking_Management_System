@@ -1,4 +1,4 @@
-from db import get_db_connection
+from database.database import get_db_connection
 
 def get_customer_report_data():
     """Fetches customer demographic and account distribution metrics."""

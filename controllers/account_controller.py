@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for, flash
-from db import get_db_connection
+from database.database import get_db_connection
 from services.banking_service import (
     deposit_money,
     withdraw_money,

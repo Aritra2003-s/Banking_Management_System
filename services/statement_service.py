@@ -5,7 +5,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
-from db import get_db_connection
+from database.database import get_db_connection
 
 
 def fetch_account_statement(account_number, start_date=None, end_date=None):
