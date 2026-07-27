@@ -79,6 +79,14 @@
 
     <!-- ================= 1. CUSTOMER REPORT TAB ================= -->
     <div id="customersTab" class="tab-pane {% if active_tab == 'customers' %}active{% endif %}">
+      
+      <!-- Customer Export Action Header -->
+      <div class="tab-action-bar">
+        <a href="{{ url_for('report.export_customers_pdf') }}" class="btn btn-danger">
+          <i class="fa-solid fa-file-pdf"></i> Export Customers PDF
+        </a>
+      </div>
+
       <section class="table-container">
         <table>
           <thead>
@@ -113,7 +121,8 @@
 
     <!-- ================= 2. TRANSACTION REPORT TAB ================= -->
     <div id="transactionsTab" class="tab-pane {% if active_tab == 'transactions' %}active{% endif %}">
-      <!-- Filter Bar -->
+      
+      <!-- Filter & Export Controls Bar -->
       <section class="form-container filter-form-container">
         <form action="{{ url_for('report.reports_route') }}" method="GET" id="transactionFilterForm">
           <input type="hidden" name="tab" value="transactions">
@@ -136,10 +145,13 @@
                 <option value="Transfer In" {% if txn_type == 'Transfer In' %}selected{% endif %}>Transfer In</option>
               </select>
             </div>
-            <div class="form-buttons align-end">
+            <div class="form-buttons align-end filter-actions">
               <button type="submit" class="btn btn-primary btn-full">
                 <i class="fa-solid fa-filter"></i> Apply Filter
               </button>
+              <a href="{{ url_for('report.export_transactions_excel', start_date=start_date, end_date=end_date, txn_type=txn_type) }}" class="btn btn-success text-nowrap">
+                <i class="fa-solid fa-file-excel"></i> Export Excel
+              </a>
             </div>
           </div>
         </form>
@@ -183,6 +195,14 @@
 
     <!-- ================= 3. ACCOUNT REPORT TAB ================= -->
     <div id="accountsTab" class="tab-pane {% if active_tab == 'accounts' %}active{% endif %}">
+      
+      <!-- Account Export Action Header -->
+      <div class="tab-action-bar">
+        <a href="{{ url_for('report.export_accounts_csv') }}" class="btn btn-secondary">
+          <i class="fa-solid fa-file-csv"></i> Export Accounts CSV
+        </a>
+      </div>
+
       <section class="table-container">
         <table>
           <thead>
@@ -224,6 +244,5 @@
 
 <!-- External JS Scripts -->
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
 </body>
 </html>

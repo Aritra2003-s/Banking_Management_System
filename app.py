@@ -9,7 +9,7 @@ from routes.report_routes import report_bp
 
 # Model and Database Imports
 from models.customer import Customer
-from database.database import get_connection
+from database.database import get_db_connection
 
 
 # ==========================================
@@ -41,7 +41,7 @@ login_manager.login_message_category = "warning"
 
 @login_manager.user_loader
 def load_user(user_id):
-    conn = get_connection()
+    conn = get_db_connection()
     cursor = conn.cursor()
     
     try:

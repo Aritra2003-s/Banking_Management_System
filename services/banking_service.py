@@ -1,4 +1,4 @@
-from db import get_db_connection
+from database.database import get_db_connection
 
 def deposit_money(account_number, amount, description="Cash Deposit"):
     """

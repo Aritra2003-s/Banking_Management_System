@@ -1,4 +1,4 @@
-from database.database import get_connection
+from database.database import get_db_connection
 from utils.security import hash_password, verify_password
 
 
@@ -18,7 +18,7 @@ def register_user(
     password
 ):
 
-    conn = get_connection()
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     try:

@@ -1,157 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secure Bank Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Bank Login</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-  <!-- External CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 
 <body>
-  <div class="background-overlay"></div>
 
-  <div class="login-container">
-    <!-- Logo Section -->
+<div class="background-overlay"></div>
+
+<div class="login-container">
+
+    <!-- Logo -->
     <div class="logo-section">
-      <div class="bank-logo">
-        <i class="fa-solid fa-building-columns"></i>
-      </div>
-      <h1>Secure Bank</h1>
-      <p>Welcome Back! Login securely to access your banking dashboard.</p>
+        <div class="bank-logo">
+            <i class="fa-solid fa-building-columns"></i>
+        </div>
+
+        <h1>Secure Bank</h1>
+
+        <p>
+            Welcome Back! Login securely to access your banking dashboard.
+        </p>
     </div>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-messages">
-          {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-              <i class="fa-solid fa-circle-info"></i> {{ message }}
+        {% if messages %}
+
+            <div class="flash-messages">
+
+                {% for category, message in messages %}
+
+                    <div class="alert alert-{{ category }}">
+                        <i class="fa-solid fa-circle-info"></i>
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
             </div>
-          {% endfor %}
-        </div>
-      {% endif %}
+
+        {% endif %}
     {% endwith %}
 
     <!-- Login Form -->
-    <form id="loginForm" method="POST" action="{{ url_for('auth.login') }}">
-      <!-- CSRF Token (Flask-WTF) -->
-      {{ form.hidden_tag() if form else '' }}
 
-      <!-- Email Input -->
-      <div class="input-group">
-        <label for="email">Email Address</label>
-        <div class="input-box">
-          <i class="fa-solid fa-envelope"></i>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            required
-            autocomplete="email"
-          />
+    <form id="loginForm"
+          method="POST"
+          action="{{ url_for('auth.login_user_route') }}"
+          novalidate>
+
+        {% if form %}
+            {{ form.hidden_tag() }}
+        {% endif %}
+
+        <!-- Email -->
+
+        <div class="input-group">
+
+            <label for="email">
+                Email Address
+            </label>
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your Email"
+                        required
+                        autocomplete="email">
+
+            </div>
+
         </div>
-      </div>
 
-      <!-- Password Input -->
-      <div class="input-group">
-        <label for="password">Password</label>
-        <div class="input-box">
-          <i class="fa-solid fa-lock"></i>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            required
-            autocomplete="current-password"
-          />
-          <span class="toggle-password" id="togglePassword" title="Toggle Password Visibility">
-            <i class="fa-solid fa-eye" id="toggleIcon"></i>
-          </span>
+        <!-- Password -->
+
+        <div class="input-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your Password"
+                        required
+                        autocomplete="current-password">
+
+                <span
+                        class="toggle-password"
+                        id="togglePassword"
+                        title="Show / Hide Password">
+
+                    <i class="fa-solid fa-eye"
+                       id="toggleIcon"></i>
+
+                </span>
+
+            </div>
+
         </div>
-      </div>
 
-      <!-- Password Strength Indicator -->
-      <div class="password-strength">
-        <div class="strength-bar" id="strengthBar"></div>
-        <small>Password Strength</small>
-      </div>
+        <!-- Password Strength -->
 
-      <!-- Options: Remember Me & Forgot Password -->
-      <div class="options">
-        <label class="remember-me">
-          <input
-            type="checkbox"
-            id="remember"
-            name="remember"
-            value="true"
-          />
-          <span>Remember Me</span>
-        </label>
-        <a href="#">Forgot Password?</a>
-      </div>
+        <div class="password-strength">
 
-      <!-- Google reCAPTCHA Placeholder -->
-      <div class="captcha-area">
-        <div class="recaptcha-placeholder">Google reCAPTCHA Here</div>
-      </div>
+            <div class="strength-bar"
+                 id="strengthBar"></div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="login-btn">
-        <i class="fa-solid fa-right-to-bracket"></i>
-        <span>Login Securely</span>
-      </button>
+            <small>Password Strength</small>
+
+        </div>
+
+        <!-- Remember -->
+
+        <div class="options">
+
+            <label class="remember-me">
+
+                <input
+                        type="checkbox"
+                        name="remember"
+                        value="true">
+
+                Remember Me
+
+            </label>
+
+            <!-- Add route later -->
+
+            <a href="#">
+                Forgot Password?
+            </a>
+
+        </div>
+
+        <!-- Future Google Captcha -->
+
+        <div class="captcha-area">
+
+            <div class="recaptcha-placeholder">
+                Google reCAPTCHA (Coming Soon)
+            </div>
+
+        </div>
+
+        <!-- Login Button -->
+
+        <button
+                class="login-btn"
+                type="submit">
+
+            <i class="fa-solid fa-right-to-bracket"></i>
+
+            Login Securely
+
+        </button>
+
     </form>
 
     <!-- Divider -->
+
     <div class="divider">
-      <span>OR</span>
+
+        <span>OR</span>
+
     </div>
 
-    <!-- OTP Login Button -->
-    <button type="button" class="otp-btn">
-      <i class="fa-solid fa-mobile-screen-button"></i>
-      <span>Login with OTP</span>
+    <!-- OTP Login -->
+
+    <button
+            type="button"
+            class="otp-btn"
+            disabled>
+
+        <i class="fa-solid fa-mobile-screen-button"></i>
+
+        Login with OTP
+        <small>(Coming Soon)</small>
+
     </button>
 
-    <!-- Fingerprint Login Button -->
-    <button type="button" class="biometric-btn">
-      <i class="fa-solid fa-fingerprint"></i>
-      <span>Login using Fingerprint</span>
+    <!-- Biometric Login -->
+
+    <button
+            type="button"
+            class="biometric-btn"
+            disabled>
+
+        <i class="fa-solid fa-fingerprint"></i>
+
+        Fingerprint Login
+        <small>(Coming Soon)</small>
+
     </button>
 
-    <!-- Account Registration Link -->
+    <!-- Register -->
+
     <div class="register">
-      Don't have an account?
-      <a href="#">Create Account</a>
+
+        Don't have an account?
+
+        <a href="{{ url_for('auth.register_page') }}">
+            Create Account
+        </a>
+
     </div>
 
-    <!-- Dark Mode Toggle -->
+    <!-- Dark Mode -->
+
     <div class="dark-mode-toggle">
-      <button type="button" id="darkModeBtn">
-        <i class="fa-solid fa-moon" id="themeIcon"></i>
-        <span id="themeText">Dark Mode</span>
-      </button>
+
+        <button
+                type="button"
+                id="darkModeBtn">
+
+            <i class="fa-solid fa-moon"
+               id="themeIcon"></i>
+
+            <span id="themeText">
+                Dark Mode
+            </span>
+
+        </button>
+
     </div>
 
-    <!-- Security Notification Banner -->
+    <!-- Security -->
+
     <div class="login-notification">
-      <i class="fa-solid fa-shield-halved"></i>
-      <span>Your login activity is monitored for security.</span>
-    </div>
-  </div>
 
-  <!-- JavaScript -->
-  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+        <i class="fa-solid fa-shield-halved"></i>
+
+        <span>
+            Your login activity is monitored for security.
+        </span>
+
+    </div>
+
+</div>
+
+<!-- JavaScript -->
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
 </body>
 </html>

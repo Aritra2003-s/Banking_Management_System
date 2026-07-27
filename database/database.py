@@ -1,8 +1,12 @@
 import sqlite3
 
-DATABASE_NAME = "database/banking.db"
+DATABASE = "database/banking.db"
 
-def get_connection():
-    conn = sqlite3.connect(DATABASE_NAME)
+def get_db_connection():
+    conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
+
+# Alias for backward compatibility
+def get_connection():
+    return get_db_connection()

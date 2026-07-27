@@ -1,4 +1,4 @@
-from database.database import get_connection
+from database.database import get_db_connection
 from utils.security import hash_password
 
 
@@ -8,7 +8,7 @@ from utils.security import hash_password
 
 def get_all_customers():
 
-    conn = get_connection()
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     try:

@@ -1,9 +1,75 @@
-/* ================= Base Reset & Typography ================= */
+/* ==========================================================================
+   Secure Bank - Modern Login Stylesheet (login.css)
+   ========================================================================== */
+
+/* ================= Custom Properties & Variables ================= */
+:root {
+  /* Color Palette - Light Theme */
+  --bg-primary: #0f172a;
+  --bg-card: #ffffff;
+  --bg-card-glass: rgba(255, 255, 255, 0.95);
+
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-label: #334155;
+
+  --border-color: #e2e8f0;
+  --border-focus: #2563eb;
+  --input-bg: #f8fafc;
+
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-glow: rgba(37, 99, 235, 0.2);
+
+  --error-color: #dc2626;
+  --error-bg: #fef2f2;
+  --error-glow: rgba(220, 38, 38, 0.15);
+
+  --success-color: #16a34a;
+  --success-bg: #f0fdf4;
+
+  /* Shadows & Radius */
+  --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 0, 0, 0.05);
+  --input-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+}
+
+/* ================= Dark Mode Overrides ================= */
+body.dark-mode {
+  --bg-primary: #020617;
+  --bg-card: #0f172a;
+  --bg-card-glass: rgba(15, 23, 42, 0.92);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-label: #cbd5e1;
+
+  --border-color: #1e293b;
+  --border-focus: #3b82f6;
+  --input-bg: #1e293b;
+
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-glow: rgba(59, 130, 246, 0.25);
+
+  --error-color: #ef4444;
+  --error-bg: rgba(239, 68, 68, 0.1);
+
+  --success-color: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.1);
+
+  --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+/* ================= Base Reset & Body ================= */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -11,79 +77,94 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0f172a;
-  color: #334155;
-  padding: 20px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: clamp(20px, 4vw, 50px) 20px;
   position: relative;
   overflow-y: auto;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Background Overlay / Decor */
+/* Ambient Dynamic Background Glow */
 .background-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(30, 41, 59, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 100%);
   z-index: -1;
+  pointer-events: none;
 }
 
-/* ================= Login Container Card ================= */
+/* ================= Glassmorphic Container ================= */
 .login-container {
-  background: #ffffff;
+  background: var(--bg-card-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   width: 100%;
-  max-width: 440px;
-  padding: 40px 32px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  border: 1px solid #e2e8f0;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  max-width: 460px;
+  padding: clamp(28px, 5vw, 40px) clamp(20px, 4vw, 36px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Logo Section */
 .logo-section {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .bank-logo {
-  width: 56px;
-  height: 56px;
-  background: #eff6ff;
-  color: #2563eb;
+  width: 58px;
+  height: 58px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.2) 100%);
+  color: var(--primary-color);
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
   margin-bottom: 12px;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bank-logo:hover {
+  transform: scale(1.08) rotate(-4deg);
 }
 
 .logo-section h1 {
-  font-size: 24px;
+  font-size: clamp(20px, 3vw, 24px);
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
   margin-bottom: 6px;
 }
 
 .logo-section p {
   font-size: 13px;
-  color: #64748b;
-  line-height: 1.5;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
-/* ================= Form Elements ================= */
+/* ================= Form Controls ================= */
 .input-group {
   margin-bottom: 18px;
+  position: relative;
 }
 
 .input-group label {
   display: block;
   font-size: 13px;
-  font-weight: 500;
-  color: #475569;
-  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-label);
+  margin-bottom: 8px;
 }
 
 .input-box {
@@ -92,93 +173,107 @@ body {
   align-items: center;
 }
 
-.input-box i.fa-envelope,
-.input-box i.fa-lock {
+.input-box i:not(.fa-eye):not(.fa-eye-slash) {
   position: absolute;
   left: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 15px;
+  pointer-events: none;
+  transition: color 0.2s ease;
 }
 
 .input-box input {
   width: 100%;
-  padding: 12px 14px 12px 42px;
-  font-size: 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  padding: 12px 16px 12px 42px;
+  font-size: 13.5px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
   outline: none;
-  color: #1e293b;
-  background-color: #ffffff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--text-primary);
+  background-color: var(--input-bg);
+  box-shadow: var(--input-shadow);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .input-box input:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: var(--border-focus);
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 4px var(--primary-glow);
 }
 
+.input-box input:focus + i {
+  color: var(--primary-color);
+}
+
+/* Password Toggle Icon */
 .toggle-password {
   position: absolute;
   right: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   cursor: pointer;
-  font-size: 14px;
-  padding: 4px;
-  transition: color 0.2s ease;
+  font-size: 15px;
+  padding: 6px;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .toggle-password:hover {
-  color: #475569;
+  color: var(--text-primary);
+  background-color: rgba(148, 163, 184, 0.15);
 }
 
-/* Password Strength Indicator */
+/* Password Strength Bar */
 .password-strength {
-  margin-top: -10px;
+  margin-top: -6px;
   margin-bottom: 18px;
 }
 
 .strength-bar {
   height: 4px;
-  width: 100%;
-  background-color: #e2e8f0;
-  border-radius: 2px;
-  margin-bottom: 4px;
-  overflow: hidden;
+  width: 0%;
+  background-color: var(--border-color);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  transition: width 0.35s ease, background-color 0.35s ease;
 }
 
 .password-strength small {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
-/* Options: Remember Me & Forgot Password */
+/* Remember Me & Options Row */
 .options {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 .remember-me {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #475569;
+  color: var(--text-label);
   cursor: pointer;
+  user-select: none;
 }
 
 .remember-me input[type="checkbox"] {
-  accent-color: #2563eb;
+  accent-color: var(--primary-color);
   width: 16px;
   height: 16px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
 .options a {
-  color: #2563eb;
+  color: var(--primary-color);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
 .options a:hover {
@@ -191,35 +286,41 @@ body {
 }
 
 .recaptcha-placeholder {
-  background: #f8fafc;
-  border: 1px dashed #cbd5e1;
-  border-radius: 8px;
-  padding: 12px;
+  padding: 10px;
+  background-color: var(--input-bg);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
   text-align: center;
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 /* ================= Buttons ================= */
 .login-btn {
   width: 100%;
-  padding: 12px;
-  background-color: #2563eb;
+  padding: 13px;
+  background-color: var(--primary-color);
   color: #ffffff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  transition: background-color 0.2s ease;
+  gap: 10px;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .login-btn:hover {
-  background-color: #1d4ed8;
+  background-color: var(--primary-hover);
+  box-shadow: 0 6px 16px var(--primary-glow);
+}
+
+.login-btn:active {
+  transform: scale(0.98);
 }
 
 /* Divider */
@@ -227,32 +328,34 @@ body {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 20px 0;
+  margin: 22px 0;
 }
 
 .divider::before,
 .divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .divider span {
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: 12px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-weight: 500;
+  letter-spacing: 0.05em;
 }
 
-/* Alternative Login Buttons */
+/* Secondary Auth Buttons (OTP / Biometric) */
 .otp-btn,
 .biometric-btn {
   width: 100%;
-  padding: 10px;
-  background-color: #ffffff;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  padding: 11px;
+  margin-bottom: 10px;
+  background-color: var(--bg-card);
+  color: var(--text-label);
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -260,119 +363,113 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 10px;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.otp-btn:hover,
-.biometric-btn:hover {
-  background-color: #f8fafc;
-  color: #1e293b;
+.otp-btn:disabled,
+.biometric-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--input-bg);
 }
 
-/* Registration Link */
+.otp-btn small,
+.biometric-btn small {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* Create Account Navigation Link */
 .register {
   text-align: center;
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-secondary);
   margin: 20px 0 16px 0;
 }
 
 .register a {
-  color: #2563eb;
+  color: var(--primary-color);
   text-decoration: none;
   font-weight: 600;
+  margin-left: 4px;
 }
 
 .register a:hover {
   text-decoration: underline;
 }
 
-/* Dark Mode Toggle Area */
+/* Dark Mode Toggle Component */
 .dark-mode-toggle {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .dark-mode-toggle button {
   background: transparent;
-  border: none;
-  color: #64748b;
+  border: 1px solid var(--border-color);
+  color: var(--text-label);
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 8px;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .dark-mode-toggle button:hover {
-  color: #1e293b;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
 }
 
-/* Security Notification Banner */
+/* Flash Messages & Banners */
+.flash-messages {
+  margin-bottom: 18px;
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
 .login-notification {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
-  padding: 10px;
-  border-radius: 8px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
   font-size: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
-  text-align: left;
+  justify-content: center;
+  text-align: center;
 }
 
 .login-notification i {
-  font-size: 14px;
-  color: #16a34a;
+  color: var(--primary-color);
 }
 
-/* ================= Dark Mode Override Styles ================= */
-body.dark-mode .login-container {
-  background-color: #1e293b;
-  border-color: #334155;
-  color: #f8fafc;
-}
+/* Responsive Styles */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 24px 18px;
+  }
 
-body.dark-mode .logo-section h1 {
-  color: #ffffff;
-}
-
-body.dark-mode .logo-section p,
-body.dark-mode .input-group label,
-body.dark-mode .remember-me,
-body.dark-mode .register {
-  color: #94a3b8;
-}
-
-body.dark-mode .input-box input {
-  background-color: #0f172a;
-  border-color: #334155;
-  color: #f8fafc;
-}
-
-body.dark-mode .otp-btn,
-body.dark-mode .biometric-btn {
-  background-color: #0f172a;
-  border-color: #334155;
-  color: #cbd5e1;
-}
-
-body.dark-mode .otp-btn:hover,
-body.dark-mode .biometric-btn:hover {
-  background-color: #1e293b;
-  color: #ffffff;
-}
-
-body.dark-mode .login-notification {
-  background-color: #064e3b;
-  border-color: #047857;
-  color: #a7f3d0;
-}
-
-body.dark-mode .login-notification i {
-  color: #34d399;
+  .options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }
